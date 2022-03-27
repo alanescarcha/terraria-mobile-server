@@ -4,16 +4,16 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2021-11-07T01:06:03+01:00",
+    "exported_at": "2022-03-27T19:45:42+00:00",
     "name": "Terraria Mobile Vanilla",
-    "author": "alanescarcha11@gmail.com",
-    "description": "Terraria Vanilla Mobile Patched by Alan Escarcha\r\nRepo: https:\/\/github.com\/alanescarcha\/terraria-mobile-server",
+    "author": "alan@vexyhost.com",
+    "description": "Terraria Vanilla Mobile Patched by Alan\r\nRepo: https:\/\/github.com\/alanescarcha\/terraria-mobile-server",
     "features": null,
     "images": [
         "quay.io\/parkervcp\/pterodactyl-images:base_debian"
     ],
     "file_denylist": [],
-    "startup": ".\/TerrariaServer.bin.x86_64 -maxplayers {{MAX_PLAYERS}} -config serverconfig.txt",
+    "startup": ".\/TerrariaServer.bin.x86_64 -maxplayers {{MAX_PLAYERS}} -port {{PORT}} -pass {{SERVER_PASS}} -world \/home\/container\/saves\/Worlds\/{{WORLD_NAME}}.wld -autocreate {{WORLD_SIZE}} -worldname {{WORLD_NAME}}",
     "config": {
         "files": "{\r\n    \"serverconfig.txt\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"worldpath\": \"\/home\/container\/saves\/Worlds\",\r\n            \"worldname\": \"{{server.build.env.WORLD_NAME}}\",\r\n            \"world\": \"\/home\/container\/saves\/Worlds\/{{server.build.env.WORLD_NAME}}.wld\",\r\n            \"difficulty\": \"{{server.build.env.WORLD_DIFFICULTY}}\",\r\n            \"autocreate\": \"{{server.build.env.WORLD_SIZE}}\",\r\n            \"port\": \"{{server.build.default.port}}\",\r\n            \"motd\": \"{{server.build.env.SERVER_MOTD}}\"\r\n        }\r\n    }\r\n}",
         "startup": "{\r\n    \"done\": \"Type 'help' for a list of commands\"\r\n}",
@@ -22,8 +22,8 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/bash\r\n# Vanilla Mobile by Alan Escarcha Installation Script\r\n# https:\/\/github.com\/alanescarcha\/terraria-mobile-server\r\n#\r\n# Server Files: \/mnt\/server\r\n## install packages to get version and download links\r\napt update\r\napt install -y curl wget file unzip\r\nmkdir -p \/mnt\/server\/\r\ncd \/mnt\/server\/\r\necho -e \"Downloading terraria server files\"\r\nDOWNLOAD_LINK=https:\/\/github.com\/alanescarcha\/terraria-mobile-server\/releases\/download\/$TERRARIA_VERSION\/terraria-server-linux.zip\r\n## this is a simple script to validate a download url actaully exists\r\nif [ ! -z \"${DOWNLOAD_LINK}\" ]; then\r\nif curl --output \/dev\/null --silent --head --fail ${DOWNLOAD_LINK}; then\r\necho -e \"link is valid.\"\r\nelse\r\necho -e \"link is invalid closing out\"\r\nexit 2\r\nfi\r\nfi\r\nCLEAN_VERSION=$(echo ${DOWNLOAD_LINK##*\/} | cut -d'-' -f3 | cut -d'.' -f1)\r\necho -e \"running 'curl -sSL ${DOWNLOAD_LINK} -o ${DOWNLOAD_LINK##*\/}'\"\r\ncurl -sSL ${DOWNLOAD_LINK} -o ${DOWNLOAD_LINK##*\/}\r\necho -e \"Unpacking server files\"\r\nunzip ${DOWNLOAD_LINK##*\/}\r\necho -e \"\"\r\ncp -R ${CLEAN_VERSION}\/Linux\/* .\/\r\nchmod +x TerrariaServer.bin.x86_64\r\necho -e \"Cleaning up extra files.\"\r\nrm -rf ${CLEAN_VERSION}\r\necho -e \"Generating config file\"\r\ncat <<EOF > serverconfig.txt\r\nworldpath=\/home\/container\/saves\/Worlds\r\nworldname=default\r\nworld=\/home\/container\/saves\/Worlds\/default.wld\r\ndifficulty=3\r\nautocreate=1\r\nport=7777\r\nmaxplayers=8\r\nEOF\r\nmkdir -p \/mnt\/server\/saves\/Worlds\r\necho -e \"Install complete\"",
-            "container": "debian:buster-slim",
+            "script": "#!\/bin\/bash\r\n# Vanilla Mobile by Alan\r\n# https:\/\/github.com\/alanescarcha\/terraria-mobile-server\r\n#\r\n# Server Files: \/mnt\/server\r\n## install packages to get version and download links\r\napt update\r\napt install -y curl wget file unzip fastjar xxd\r\nmkdir -p \/mnt\/server\/\r\ncd \/mnt\/server\/\r\necho -e \"Downloading terraria server files\"\r\nDOWNLOAD_LINK=https:\/\/github.com\/alanescarcha\/terraria-mobile-server\/raw\/main\/terraria-server-linux.zip\r\n## this is a simple script to validate a download url actaully exists\r\nCLEAN_VERSION=$(echo ${DOWNLOAD_LINK##*\/} | cut -d'-' -f3 | cut -d'.' -f1)\r\necho -e \"running 'curl -sSL ${DOWNLOAD_LINK} -o ${DOWNLOAD_LINK##*\/}'\"\r\ncurl -sSL https:\/\/github.com\/alanescarcha\/terraria-mobile-server\/raw\/main\/terraria-server-linux.zip -o ${DOWNLOAD_LINK##*\/}\r\necho -e \"Unpacking server files\"\r\njar xvf ${DOWNLOAD_LINK##*\/}\r\necho -e \"\"\r\ncp -R ${CLEAN_VERSION}\/* .\/\r\n##echo \"0x086519\" | xxd -r - TerrariaServer.exe\r\nchmod +x TerrariaServer.bin.x86_64\r\necho -e \"Cleaning up extra files.\"\r\nrm -rf ${CLEAN_VERSION}\r\necho -e \"Generating config file\"\r\ncat <<EOF > serverconfig.txt\r\nworldpath=\/home\/container\/saves\/Worlds\r\nworldname=default\r\nworld=\/home\/container\/saves\/Worlds\/default.wld\r\ndifficulty=3\r\nautocreate=1\r\nport=7777\r\nmaxplayers=8\r\nEOF\r\nmkdir -p \/mnt\/server\/saves\/Worlds\r\necho -e \"Install complete\"",
+            "container": "debian:buster",
             "entrypoint": "bash"
         }
     },
@@ -50,9 +50,9 @@
             "name": "Difficulty",
             "description": "World Difficulty\r\n\r\nOptions: 0(normal), 1(expert), 2(master), 3(journey)",
             "env_variable": "WORLD_DIFFICULTY",
-            "default_value": "3",
+            "default_value": "0",
             "user_viewable": true,
-            "user_editable": true,
+            "user_editable": false,
             "rules": "required|string|max:20"
         },
         {
@@ -80,6 +80,24 @@
             "default_value": "1.4.0.5",
             "user_viewable": true,
             "user_editable": false,
+            "rules": "required|string|max:20"
+        },
+        {
+            "name": "Port",
+            "description": "",
+            "env_variable": "PORT",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:20"
+        },
+        {
+            "name": "Password",
+            "description": "",
+            "env_variable": "SERVER_PASS",
+            "default_value": "Password",
+            "user_viewable": true,
+            "user_editable": true,
             "rules": "required|string|max:20"
         }
     ]
