@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-11-02T23:46:54+00:00",
+    "exported_at": "2023-10-29T04:22:47+00:00",
     "name": "Terraria Mobile Vanilla",
     "author": "alanescarcha11@gmail.com",
     "description": "Terraria Vanilla Mobile Patched by Alan Escarcha\r\nRepo: https:\/\/github.com\/alanescarcha\/terraria-mobile-server",
@@ -52,10 +52,10 @@
             "name": "Difficulty",
             "description": "World Difficulty\r\n\r\nOptions: 0(normal), 1(expert), 2(master), 3(journey)",
             "env_variable": "WORLD_DIFFICULTY",
-            "default_value": "3",
+            "default_value": "0",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:20",
+            "rules": "required|numeric|digits_between:0,3",
             "field_type": "text"
         },
         {
@@ -82,7 +82,7 @@
             "name": "Terraria version",
             "description": "The version of Terraria mobile",
             "env_variable": "TERRARIA_VERSION",
-            "default_value": "1.4.4.5",
+            "default_value": "1.4.4.9",
             "user_viewable": true,
             "user_editable": false,
             "rules": "required|string|max:20",
